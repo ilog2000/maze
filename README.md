@@ -39,8 +39,45 @@ As soon as we generated a maze, it becomes a graph. We can use graph search algo
 * [Dijkstra's algorithm](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm) (Dijkstra)
 * [A* search algorithm](https://en.wikipedia.org/wiki/A*_search_algorithm) (A*)
 
+### Complexity
+
+* BFS: O(|V| + |E|)
+* DFS: O(|V| + |E|)
+* Dijkstra: O(|E| + |V|log|V|)
+* A*: O(|E| + |V|log|V|)
+where V is the number of vertices (nodes) and E is the number of edges in the graph.
+
+### Optimize
+
+The initial DFS search used random selection of the next cell to visit. This is not optimal, because it can lead to a situation when the path is very long. We can optimize the search by measuring the distance to the end cell and selecting the next cell to visit based on the distance. This will lead to a shorter path. Basically, we will use priorities similar to Dijkstra's algorithm.
+
+### Alternative paths
+
+Getting alternative paths is based on DFS algoritm. We have to randomize the selection of the next cell to visit, otherwise we will get the same path every time. The code gives 10 attempts to find an alternative path. If the path is duplicate, it is discarded, so the final list contains only unique paths. To display the list, it is sorted by path length.
+
+### Visualize
+
+The following ways to visualize the maze are implemented:
+
+* display the unsolved maze in the console; it is useful for seeing the parsed maze,
+* display the solved maze in the console; it is useful for seeing the path that was found,
+* animated dispaly of the process of solving the maze,
+* display the process of solving the maze frame by frame; it is useful for debugging search algorithms.
+
+### Run the code
+
+The code requires .NET 7. To run the code clone the repository, navigate to the solution root, and execute the following command:
+```cmd
+dotnet run --project src/MazeSolve
+```
+Alternatively, you can build the solution and run the executable:
+```cmd
+dotnet build
+dotnet src/MazeSolve/bin/Debug/net7.0/MazeSolve.dll
+```
+
 ### TODO
 
-* [ ] Measure distance from start and distance to end
+* [X] Optimize: measure distance to end in DFS and try selecting the shortest.
 * [ ] Is it possibe to make path search multi-threaded? How to sync the paths?
 * [ ] Is it possible to make path search distributed? Again, how to sync the paths? Storing in distributed cache?

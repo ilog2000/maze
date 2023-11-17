@@ -20,60 +20,61 @@ if (ConsoleUI.AskYN("Display unsolved maze?"))
     maze.DisplayUnsolved();
 }
 
-MazeSearchResult result = null;
+MazePath mazePath = null;
 
 if (ConsoleUI.AskYN("Solve using DFS?"))
 {
-    result = maze.SolveDFS();
-    maze.DisplayPathHighlight(result.Path);
-    Console.WriteLine($"Solved: {result.Path.Solved}, steps: {result.Path.Points.Count}, elapsed: {result.ElapsedMilliseconds} ms");
+    mazePath = maze.SolveDFS();
+    maze.DisplayPathHighlight(mazePath);
+    mazePath.DisplayPathInfo();
 }
 else if (ConsoleUI.AskYN("Solve using BFS?"))
 {
-    result = maze.SolveBFS();
-    maze.DisplayPathHighlight(result.Path);
-    Console.WriteLine($"Solved: {result.Path.Solved}, steps: {result.Path.Points.Count}, elapsed: {result.ElapsedMilliseconds} ms");
+    mazePath = maze.SolveBFS();
+    maze.DisplayPathHighlight(mazePath);
+    mazePath.DisplayPathInfo();
 }
 else if (ConsoleUI.AskYN("Solve using Dijkstra?"))
 {
-    result = maze.SolveDijkstra();
-    maze.DisplayPathHighlight(result.Path);
-    Console.WriteLine($"Solved: {result.Path.Solved}, steps: {result.Path.Points.Count}, elapsed: {result.ElapsedMilliseconds} ms");
+    mazePath = maze.SolveDijkstra();
+    maze.DisplayPathHighlight(mazePath);
+    mazePath.DisplayPathInfo();
 }
 else if (ConsoleUI.AskYN("Solve using A*?"))
 {
-    result = maze.SolveAStar();
-    maze.DisplayPathHighlight(result.Path);
-    Console.WriteLine($"Solved: {result.Path.Solved}, steps: {result.Path.Points.Count}, elapsed: {result.ElapsedMilliseconds} ms");
+    mazePath = maze.SolveAStar();
+    maze.DisplayPathHighlight(mazePath);
+    mazePath.DisplayPathInfo();
 }
 
-if (result != null && ConsoleUI.AskYN("Display solving process?"))
+if (mazePath != null && ConsoleUI.AskYN("Display solving process?"))
 {
-    maze.DisplaySolving(result.Path);
+    maze.DisplaySolving(mazePath);
 }
-else if (result != null && ConsoleUI.AskYN("Display frame by frame?"))
+else if (mazePath != null && ConsoleUI.AskYN("Display frame by frame?"))
 {
-    maze.DisplayFrameByFrame(result.Path);
+    maze.DisplayFrameByFrame(mazePath);
 }
 
 if (ConsoleUI.AskYN("Try to find alternative solutions?"))
 {
     var paths = new List<MazePath>();
     var newMaze = Maze.Parse(text);
-    var nextResult = newMaze.TrySolveAltDFS(paths);
+    var nextPath = newMaze.TrySolveAltDFS(paths);
     int MAX_ATTEMPTS = 10;
     var attempt = 0;
 
     while (attempt < MAX_ATTEMPTS)
     {
         attempt++;
-        if (!paths.Any(p => p.Equals(nextResult.Path)))
+        if (!paths.Any(p => p.Equals(nextPath)))
         {
-            paths.Add(nextResult.Path);
+            paths.Add(nextPath);
         }
         newMaze = Maze.Parse(text);
-        nextResult = newMaze.TrySolveAltDFS(paths);
+        nextPath = newMaze.TrySolveAltDFS(paths);
     }
+
     if (paths.Count == 0)
     {
         Console.WriteLine("No alternative paths found.");
@@ -84,7 +85,7 @@ if (ConsoleUI.AskYN("Try to find alternative solutions?"))
         foreach (var path in orderedPaths)
         {
             newMaze.DisplayPathHighlight(path);
-            Console.WriteLine($"Solved: {path.Solved}, steps: {path.Points.Count}");
+            path.DisplayPathInfo();
             Console.WriteLine();
         }
     }

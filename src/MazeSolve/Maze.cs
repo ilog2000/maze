@@ -91,7 +91,7 @@ public class Maze
         return maze;
     }
 
-    public MazeSearchResult SolveDFS()
+    public MazePath SolveDFS()
     {
         var stopwatch = Stopwatch.StartNew();
         var path = new MazePath();
@@ -124,14 +124,11 @@ public class Maze
         }
 
         stopwatch.Stop();
-        return new MazeSearchResult
-        {
-            Path = path,
-            ElapsedMilliseconds = stopwatch.ElapsedMilliseconds,
-        };
+        path.ElapsedMilliseconds = stopwatch.Elapsed.TotalMilliseconds;
+        return path;
     }
 
-    public MazeSearchResult TrySolveAltDFS(List<MazePath> pathList)
+    public MazePath TrySolveAltDFS(List<MazePath> pathList)
     {
         var stopwatch = Stopwatch.StartNew();
         var path = new MazePath();
@@ -194,14 +191,11 @@ public class Maze
         }
 
         stopwatch.Stop();
-        return new MazeSearchResult
-        {
-            Path = path,
-            ElapsedMilliseconds = stopwatch.ElapsedMilliseconds,
-        };
+        path.ElapsedMilliseconds = stopwatch.Elapsed.TotalMilliseconds;
+        return path;
     }
 
-    public MazeSearchResult SolveBFS()
+    public MazePath SolveBFS()
     {
         var stopwatch = Stopwatch.StartNew();
         var path = new MazePath();
@@ -232,14 +226,11 @@ public class Maze
         }
 
         stopwatch.Stop();
-        return new MazeSearchResult
-        {
-            Path = path,
-            ElapsedMilliseconds = stopwatch.ElapsedMilliseconds,
-        };
+        path.ElapsedMilliseconds = stopwatch.Elapsed.TotalMilliseconds;
+        return path;
     }
 
-    public MazeSearchResult SolveDijkstra()
+    public MazePath SolveDijkstra()
     {
         var stopwatch = Stopwatch.StartNew();
         var path = new MazePath();
@@ -270,14 +261,11 @@ public class Maze
         }
 
         stopwatch.Stop();
-        return new MazeSearchResult
-        {
-            Path = path,
-            ElapsedMilliseconds = stopwatch.ElapsedMilliseconds,
-        };
+        path.ElapsedMilliseconds = stopwatch.Elapsed.TotalMilliseconds;
+        return path;
     }
 
-    public MazeSearchResult SolveAStar()
+    public MazePath SolveAStar()
     {
         var stopwatch = Stopwatch.StartNew();
         var path = new MazePath();
@@ -323,11 +311,8 @@ public class Maze
         }
 
         stopwatch.Stop();
-        return new MazeSearchResult
-        {
-            Path = path,
-            ElapsedMilliseconds = stopwatch.ElapsedMilliseconds,
-        };
+        path.ElapsedMilliseconds = stopwatch.Elapsed.TotalMilliseconds;
+        return path;
     }
 
     private List<MazeItem> GetUnvisitedNeighbors(MazeItem current)

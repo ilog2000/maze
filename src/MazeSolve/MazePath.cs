@@ -2,6 +2,7 @@ public class MazePath
 {
     public List<PathPoint> Points { get; } = new List<PathPoint>();
     public bool Solved { get; set; }
+    public Nullable<double> ElapsedMilliseconds { get; set; } = null;
 
     public override bool Equals(object obj)
     {
