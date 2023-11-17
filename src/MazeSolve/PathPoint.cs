@@ -1,10 +1,10 @@
-public class PathNode
+public class PathPoint
 {
     public int X { get; private set; }
     public int Y { get; private set; }
     public bool IsCell { get; set; }
 
-    public PathNode(MazeItem item)
+    public PathPoint(MazeItem item)
     {
         X = item.MazeX;
         Y = item.MazeY;

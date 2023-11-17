@@ -94,7 +94,6 @@ public class Maze
     public MazeSearchResult SolveDFS()
     {
         var stopwatch = Stopwatch.StartNew();
-        var solved = false;
         var path = new MazePath();
 
         var stack = new Stack<MazeItem>();
@@ -105,10 +104,10 @@ public class Maze
         while (stack.Count > 0)
         {
             current = stack.Pop();
-            path.Nodes.Add(new PathNode(current));
+            path.Points.Add(new PathPoint(current));
             if (this.MatchEnd(current))
             {
-                solved = true;
+                path.Solved = true;
                 break;
             }
             var neighbors = GetUnvisitedNeighbors(current);
@@ -127,16 +126,84 @@ public class Maze
         stopwatch.Stop();
         return new MazeSearchResult
         {
-            solved = solved,
+            Path = path,
             ElapsedMilliseconds = stopwatch.ElapsedMilliseconds,
-            Path = path
+        };
+    }
+
+    public MazeSearchResult TrySolveAltDFS(List<MazePath> pathList)
+    {
+        var stopwatch = Stopwatch.StartNew();
+        var path = new MazePath();
+
+        var stack = new Stack<MazeItem>();
+        var current = grid[MazeStartX, MazeStartY];
+        current.Visited = true;
+        stack.Push(current);
+
+        while (stack.Count > 0)
+        {
+            current = stack.Pop();
+            path.Points.Add(new PathPoint(current));
+            if (this.MatchEnd(current))
+            {
+                path.Solved = true;
+                break;
+            }
+            var neighbors = GetUnvisitedNeighbors(current);
+            if (neighbors.Count > 0)
+            {
+                if (neighbors.Count > 1)
+                {
+                    // We are in graph node, not in graph edge. So, we can branch here.
+                    var available = neighbors.Where(node => pathList.All(p => !node.IsInPath(p)));
+                    if (available.Any())
+                    {
+                        // There still are nodes that are not in any path.
+                        stack.Push(current);
+                        var next = available.OrderBy(node => this.DistanceToEnd(node)).First();
+                        next.Visited = true;
+                        stack.Push(next);
+                    }
+                    else if (this.DistanceToEnd(current) > 1)
+                    {
+                        // We are not in the end node, but all neighbors are in some path.
+                        stack.Push(current);
+                        var next = neighbors[new Random().Next(neighbors.Count)];
+                        next.Visited = true;
+                        stack.Push(next);
+                    }
+                    else
+                    {
+                        // We are in the end node.
+                        stack.Push(current);
+                        var next = neighbors.First();
+                        next.Visited = true;
+                        stack.Push(next);
+                    }
+                }
+                else
+                {
+                    // We are in graph edge.
+                    stack.Push(current);
+                    var next = neighbors.First();
+                    next.Visited = true;
+                    stack.Push(next);
+                }
+            }
+        }
+
+        stopwatch.Stop();
+        return new MazeSearchResult
+        {
+            Path = path,
+            ElapsedMilliseconds = stopwatch.ElapsedMilliseconds,
         };
     }
 
     public MazeSearchResult SolveBFS()
     {
         var stopwatch = Stopwatch.StartNew();
-        var solved = false;
         var path = new MazePath();
 
         var queue = new Queue<MazeItem>();
@@ -147,10 +214,10 @@ public class Maze
         while (queue.Count > 0)
         {
             current = queue.Dequeue();
-            path.Nodes.Add(new PathNode(current));
+            path.Points.Add(new PathPoint(current));
             if (this.MatchEnd(current))
             {
-                solved = true;
+                path.Solved = true;
                 break;
             }
             var neighbors = GetUnvisitedNeighbors(current);
@@ -167,16 +234,14 @@ public class Maze
         stopwatch.Stop();
         return new MazeSearchResult
         {
-            solved = solved,
+            Path = path,
             ElapsedMilliseconds = stopwatch.ElapsedMilliseconds,
-            Path = path
         };
     }
 
     public MazeSearchResult SolveDijkstra()
     {
         var stopwatch = Stopwatch.StartNew();
-        var solved = false;
         var path = new MazePath();
 
         var queue = new PriorityQueue<MazeItem, int>();
@@ -187,10 +252,10 @@ public class Maze
         while (queue.Count > 0)
         {
             current = queue.Dequeue();
-            path.Nodes.Add(new PathNode(current));
+            path.Points.Add(new PathPoint(current));
             if (this.MatchEnd(current))
             {
-                solved = true;
+                path.Solved = true;
                 break;
             }
             var neighbors = GetUnvisitedNeighbors(current);
@@ -207,16 +272,14 @@ public class Maze
         stopwatch.Stop();
         return new MazeSearchResult
         {
-            solved = solved,
+            Path = path,
             ElapsedMilliseconds = stopwatch.ElapsedMilliseconds,
-            Path = path
         };
     }
 
     public MazeSearchResult SolveAStar()
     {
         var stopwatch = Stopwatch.StartNew();
-        var solved = false;
         var path = new MazePath();
 
         var openSet = new HashSet<MazeItem>();
@@ -236,10 +299,10 @@ public class Maze
         {
             var current = queue.Dequeue();
             openSet.Remove(current);
-            path.Nodes.Add(new PathNode(current));
+            path.Points.Add(new PathPoint(current));
             if (current == end)
             {
-                solved = true;
+                path.Solved = true;
                 break;
             }
 
@@ -262,9 +325,8 @@ public class Maze
         stopwatch.Stop();
         return new MazeSearchResult
         {
-            solved = solved,
+            Path = path,
             ElapsedMilliseconds = stopwatch.ElapsedMilliseconds,
-            Path = path
         };
     }
 
