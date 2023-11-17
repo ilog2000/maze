@@ -91,6 +91,7 @@ public static class ConsoleExtensions
 
     public static void DisplayPathInfo(this MazePath path)
     {
-        Console.WriteLine($"Solved: {path.Solved}, steps: {path.Points.Count}, elapsed: {path.ElapsedMilliseconds} ms");
+        var elapsed = path.ElapsedMilliseconds.HasValue ? $"{path.ElapsedMilliseconds.Value} ms" : "not measured";
+        Console.WriteLine($"Solved: {path.Solved}, steps: {path.Points.Count}, elapsed: {elapsed}");
     }
 }
