@@ -20,7 +20,7 @@ public static class ConsoleExtensions
         }
     }
 
-    public static void DisplayPoint(this Maze maze, PathPoint point)
+    public static void DisplayPoint(this Maze maze, PathItem point)
     {
         for (int i = 0; i < maze.MazeHeight; i++)
         {
@@ -45,20 +45,21 @@ public static class ConsoleExtensions
     {
         Console.Clear();
         Console.CursorVisible = false;
-        foreach (var point in path.Points)
+        foreach (var point in path.Items)
         {
             Console.SetCursorPosition(0, 0);
             maze.DisplayPoint(point);
             Thread.Sleep(TimeSpan.FromMilliseconds(100));
         }
         Console.CursorVisible = true;
+        Console.WriteLine();
     }
 
     public static void DisplayFrameByFrame(this Maze maze, MazePath path)
     {
         Console.Clear();
         Console.CursorVisible = false;
-        foreach (var point in path.Points)
+        foreach (var point in path.Items)
         {
             Console.SetCursorPosition(0, 0);
             maze.DisplayPoint(point);
@@ -66,9 +67,10 @@ public static class ConsoleExtensions
             Console.ReadKey();
         }
         Console.CursorVisible = true;
+        Console.WriteLine();
     }
 
-    public static void DisplayPathHighlight(this Maze maze, MazePath path)
+    public static void DisplayPathHighlighted(this Maze maze, MazePath path)
     {
         for (int i = 0; i < maze.MazeHeight; i++)
         {
@@ -80,7 +82,7 @@ public static class ConsoleExtensions
                 }
                 else
                 {
-                    var isInPath = path.Points.Any(point => point.X == i && point.Y == j);
+                    var isInPath = path.Items.Any(point => point.X == i && point.Y == j);
                     var displaySymbol = isInPath ? " □ " : "   ";
                     Console.Write(displaySymbol);
                 }
@@ -92,6 +94,6 @@ public static class ConsoleExtensions
     public static void DisplayPathInfo(this MazePath path)
     {
         var elapsed = path.ElapsedMilliseconds.HasValue ? $"{path.ElapsedMilliseconds.Value} ms" : "not measured";
-        Console.WriteLine($"Solved: {path.Solved}, steps: {path.Points.Count}, elapsed: {elapsed}");
+        Console.WriteLine($"Solved: {path.Solved}, steps: {path.Items.Count}, elapsed: {elapsed}");
     }
 }

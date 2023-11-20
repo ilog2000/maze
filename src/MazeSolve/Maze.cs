@@ -104,20 +104,20 @@ public class Maze
         while (stack.Count > 0)
         {
             current = stack.Pop();
-            path.Points.Add(new PathPoint(current));
+            path.Items.Add(new PathItem(current));
             if (this.MatchEnd(current))
             {
                 path.Solved = true;
                 break;
             }
-            var neighbors = GetUnvisitedNeighbors(current);
-            if (neighbors.Count > 0)
+            var neighbours = GetUnvisitedNeighbours(current);
+            if (neighbours.Count > 0)
             {
                 stack.Push(current);
                 // Original:
-                // var next = neighbors[new Random().Next(neighbors.Count)];
+                // var next = neighbours[new Random().Next(neighbours.Count)];
                 // Optimization - try to select a node that is the most close to the end:
-                var next = neighbors.OrderBy(node => this.DistanceToEnd(node)).First();
+                var next = neighbours.OrderBy(node => this.DistanceToEnd(node)).First();
                 next.Visited = true;
                 stack.Push(next);
             }
@@ -141,19 +141,19 @@ public class Maze
         while (stack.Count > 0)
         {
             current = stack.Pop();
-            path.Points.Add(new PathPoint(current));
+            path.Items.Add(new PathItem(current));
             if (this.MatchEnd(current))
             {
                 path.Solved = true;
                 break;
             }
-            var neighbors = GetUnvisitedNeighbors(current);
-            if (neighbors.Count > 0)
+            var neighbours = GetUnvisitedNeighbours(current);
+            if (neighbours.Count > 0)
             {
-                if (neighbors.Count > 1)
+                if (neighbours.Count > 1)
                 {
                     // We are in graph node, not in graph edge. So, we can branch here.
-                    var available = neighbors.Where(node => pathList.All(p => !node.IsInPath(p)));
+                    var available = neighbours.Where(node => pathList.All(p => !node.IsInPath(p)));
                     if (available.Any())
                     {
                         // There still are nodes that are not in any path.
@@ -164,9 +164,9 @@ public class Maze
                     }
                     else if (this.DistanceToEnd(current) > 1)
                     {
-                        // We are not in the end node, but all neighbors are in some path.
+                        // We are not in the end node, but all neighbours are in some path.
                         stack.Push(current);
-                        var next = neighbors[new Random().Next(neighbors.Count)];
+                        var next = neighbours[new Random().Next(neighbours.Count)];
                         next.Visited = true;
                         stack.Push(next);
                     }
@@ -174,7 +174,7 @@ public class Maze
                     {
                         // We are in the end node.
                         stack.Push(current);
-                        var next = neighbors.First();
+                        var next = neighbours.First();
                         next.Visited = true;
                         stack.Push(next);
                     }
@@ -183,7 +183,7 @@ public class Maze
                 {
                     // We are in graph edge.
                     stack.Push(current);
-                    var next = neighbors.First();
+                    var next = neighbours.First();
                     next.Visited = true;
                     stack.Push(next);
                 }
@@ -208,19 +208,19 @@ public class Maze
         while (queue.Count > 0)
         {
             current = queue.Dequeue();
-            path.Points.Add(new PathPoint(current));
+            path.Items.Add(new PathItem(current));
             if (this.MatchEnd(current))
             {
                 path.Solved = true;
                 break;
             }
-            var neighbors = GetUnvisitedNeighbors(current);
-            if (neighbors.Count > 0)
+            var neighbours = GetUnvisitedNeighbours(current);
+            if (neighbours.Count > 0)
             {
-                foreach (var neighbor in neighbors)
+                foreach (var neighbour in neighbours)
                 {
-                    neighbor.Visited = true;
-                    queue.Enqueue(neighbor);
+                    neighbour.Visited = true;
+                    queue.Enqueue(neighbour);
                 }
             }
         }
@@ -243,19 +243,19 @@ public class Maze
         while (queue.Count > 0)
         {
             current = queue.Dequeue();
-            path.Points.Add(new PathPoint(current));
+            path.Items.Add(new PathItem(current));
             if (this.MatchEnd(current))
             {
                 path.Solved = true;
                 break;
             }
-            var neighbors = GetUnvisitedNeighbors(current);
-            if (neighbors.Count > 0)
+            var neighbours = GetUnvisitedNeighbours(current);
+            if (neighbours.Count > 0)
             {
-                foreach (var neighbor in neighbors)
+                foreach (var neighbour in neighbours)
                 {
-                    neighbor.Visited = true;
-                    queue.Enqueue(neighbor, this.DistanceToEnd(neighbor));
+                    neighbour.Visited = true;
+                    queue.Enqueue(neighbour, this.DistanceToEnd(neighbour));
                 }
             }
         }
@@ -287,24 +287,24 @@ public class Maze
         {
             var current = queue.Dequeue();
             openSet.Remove(current);
-            path.Points.Add(new PathPoint(current));
+            path.Items.Add(new PathItem(current));
             if (current == end)
             {
                 path.Solved = true;
                 break;
             }
 
-            foreach (var neighbor in GetUnvisitedNeighbors(current))
+            foreach (var neighbour in GetUnvisitedNeighbours(current))
             {
                 var tentativeGScore = gScore[current] + 1;
-                if (!gScore.ContainsKey(neighbor) || tentativeGScore < gScore[neighbor])
+                if (!gScore.ContainsKey(neighbour) || tentativeGScore < gScore[neighbour])
                 {
-                    gScore[neighbor] = tentativeGScore;
-                    fScore[neighbor] = gScore[neighbor] + this.DistanceToEnd(neighbor);
-                    if (!openSet.Contains(neighbor))
+                    gScore[neighbour] = tentativeGScore;
+                    fScore[neighbour] = gScore[neighbour] + this.DistanceToEnd(neighbour);
+                    if (!openSet.Contains(neighbour))
                     {
-                        queue.Enqueue(neighbor, fScore[neighbor]);
-                        openSet.Add(neighbor);
+                        queue.Enqueue(neighbour, fScore[neighbour]);
+                        openSet.Add(neighbour);
                     }
                 }
             }
@@ -315,30 +315,30 @@ public class Maze
         return path;
     }
 
-    private List<MazeItem> GetUnvisitedNeighbors(MazeItem current)
+    private List<MazeItem> GetUnvisitedNeighbours(MazeItem current)
     {
-        var neighbors = new List<MazeItem>();
+        var neighbours = new List<MazeItem>();
 
         var x = current.MazeX;
         var y = current.MazeY;
 
         if (x > 0 && !grid[x - 1, y].IsClosedWall() && !grid[x - 1, y].Visited)
         {
-            neighbors.Add(grid[x - 1, y]);
+            neighbours.Add(grid[x - 1, y]);
         }
         if (x < mazeHeight - 1 && !grid[x + 1, y].IsClosedWall() && !grid[x + 1, y].Visited)
         {
-            neighbors.Add(grid[x + 1, y]);
+            neighbours.Add(grid[x + 1, y]);
         }
         if (y > 0 && !grid[x, y - 1].IsClosedWall() && !grid[x, y - 1].Visited)
         {
-            neighbors.Add(grid[x, y - 1]);
+            neighbours.Add(grid[x, y - 1]);
         }
         if (y < mazeWidth - 1 && !grid[x, y + 1].IsClosedWall() && !grid[x, y + 1].Visited)
         {
-            neighbors.Add(grid[x, y + 1]);
+            neighbours.Add(grid[x, y + 1]);
         }
 
-        return neighbors;
+        return neighbours;
     }
 }

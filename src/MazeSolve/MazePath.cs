@@ -1,19 +1,19 @@
 public class MazePath
 {
-    public List<PathPoint> Points { get; } = new List<PathPoint>();
+    public List<PathItem> Items { get; } = new List<PathItem>();
     public bool Solved { get; set; }
     public Nullable<double> ElapsedMilliseconds { get; set; } = null;
 
     public override bool Equals(object obj)
     {
-        if (obj is MazePath other)
+        if (obj is MazePath path)
         {
-            if (Points.Count != other.Points.Count)
+            if (Items.Count != path.Items.Count)
                 return false;
 
-            for (int i = 0; i < Points.Count; i++)
+            for (int i = 0; i < Items.Count; i++)
             {
-                if (Points[i].X != other.Points[i].X || Points[i].Y != other.Points[i].Y)
+                if (Items[i].X != path.Items[i].X || Items[i].Y != path.Items[i].Y)
                     return false;
             }
 

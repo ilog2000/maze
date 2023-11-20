@@ -25,25 +25,25 @@ MazePath mazePath = null;
 if (ConsoleUI.AskYN("Solve using DFS?"))
 {
     mazePath = maze.SolveDFS();
-    maze.DisplayPathHighlight(mazePath);
+    maze.DisplayPathHighlighted(mazePath);
     mazePath.DisplayPathInfo();
 }
 else if (ConsoleUI.AskYN("Solve using BFS?"))
 {
     mazePath = maze.SolveBFS();
-    maze.DisplayPathHighlight(mazePath);
+    maze.DisplayPathHighlighted(mazePath);
     mazePath.DisplayPathInfo();
 }
 else if (ConsoleUI.AskYN("Solve using Dijkstra?"))
 {
     mazePath = maze.SolveDijkstra();
-    maze.DisplayPathHighlight(mazePath);
+    maze.DisplayPathHighlighted(mazePath);
     mazePath.DisplayPathInfo();
 }
 else if (ConsoleUI.AskYN("Solve using A*?"))
 {
     mazePath = maze.SolveAStar();
-    maze.DisplayPathHighlight(mazePath);
+    maze.DisplayPathHighlighted(mazePath);
     mazePath.DisplayPathInfo();
 }
 
@@ -81,10 +81,10 @@ if (ConsoleUI.AskYN("Try to find alternative solutions?"))
     }
     else
     {
-        var orderedPaths = paths.OrderBy(p => p.Points.Count).ToList();
+        var orderedPaths = paths.OrderBy(p => p.Items.Count).ToList();
         foreach (var path in orderedPaths)
         {
-            newMaze.DisplayPathHighlight(path);
+            newMaze.DisplayPathHighlighted(path);
             path.DisplayPathInfo();
             Console.WriteLine();
         }

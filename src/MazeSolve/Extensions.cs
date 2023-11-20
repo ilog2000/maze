@@ -32,6 +32,6 @@ public static class Extensions
 
     public static bool IsInPath(this MazeItem item, MazePath path)
     {
-        return path.Points.Any(p => p.X == item.MazeX && p.Y == item.MazeY);
+        return path.Items.Any(p => p.X == item.MazeX && p.Y == item.MazeY);
     }
 }
